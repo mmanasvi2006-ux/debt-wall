@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: debt-wall
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn --chdir backend app:app
+    envVars:
+      - key: SEC_USER_AGENT
+        sync: false

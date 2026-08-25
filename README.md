@@ -18,17 +18,37 @@ cd backend
 pip install -r requirements.txt
 ```
 
-Before running, open `backend/sec_edgar.py` and put your real name/email in
-`USER_AGENT` at the top — SEC requires every request to identify a real
-contact, and blocks generic ones. This is standard SEC EDGAR API etiquette,
-not a secret key.
+SEC requires every request to identify a real contact. The default is set in
+`backend/sec_edgar.py`; override it without editing code by setting an env var:
 
 ```bash
+export SEC_USER_AGENT="Debt Wall (contact: you@example.com)"
 python app.py
 ```
 
 Open **http://localhost:5000** and type a ticker (try `AAPL`, `KO`, `T`, `F`,
 or `BA`).
+
+## Deploy it
+
+The repo ships with a `render.yaml` and a `Procfile`, so it runs on any
+Python host that speaks gunicorn.
+
+**Render (free tier):**
+
+1. Go to [render.com](https://render.com) → **New → Blueprint**.
+2. Connect this GitHub repo. Render reads `render.yaml` automatically.
+3. Set the `SEC_USER_AGENT` environment variable to `Debt Wall (contact: your-real-email)`.
+4. Deploy. First request after idle takes ~30s on the free tier (cold start).
+
+**Anywhere else** (Railway, Fly, Heroku): the start command is
+
+```bash
+gunicorn --chdir backend app:app
+```
+
+Note: GitHub Pages can't host this, since the Flask backend is what talks
+to SEC EDGAR.
 
 ## How it works
 
